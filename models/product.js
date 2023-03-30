@@ -1,18 +1,18 @@
-// const products =[];
+const products =[];
 
-// module.exports = class Product {
-//       constructor(t){
-//         this.title=t;
-//       }
+module.exports = class Product {
+      constructor(t){
+        this.title=t;
+      }
 
-//       save(){
-//         products.push(this)
-//       }
+      save() {
+        products.push(this)
+      }
     
 
-//       static fetchAll() {
-//            return products;
-//       }
+      static fetchAll() {
+           return products;
+      }
 
 
-// }
+}

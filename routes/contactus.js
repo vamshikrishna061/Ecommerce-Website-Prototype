@@ -6,6 +6,6 @@ const Router = express.Router();
 
 Router.get('/',contactUsController.getContactUs)
 
-Router.post('/success',contactUsController.postContactUs)
+Router.post('/sucess',contactUsController.postContactUs)
 
 module.exports = Router;

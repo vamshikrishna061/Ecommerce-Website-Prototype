@@ -6,6 +6,7 @@ exports.getContactUs = (req,res,next)=>{
 }
 
 exports.postContactUs = (req,res,next)=>{
-    console.log(req.body);
-    res.sendFile(path.join(rootDir,'views','success.html'))
-}
+    //console.log(req.body);
+    res.sendFile(path.join(rootDir,'views','sucess.html'))
+ }
+
