@@ -1,4 +1,6 @@
 const path = require('path');
+const cart = require('../models/cart')
+
 const Product = require('../models/product.js');
 const rootDir = require('../util/path.js');
 
@@ -33,12 +35,23 @@ exports.getIndex = (req, res, next) => {
   });
 };
 
+
+
 exports.getCart = (req, res, next) => {
   res.render('shop/cart', {
     path: '/cart',
     pageTitle: 'Your Cart'
   });
 };
+
+exports.postCart = (req, res, next) => {
+  const prodId = req.body.productId;
+  Product.findById(prodId, Product=>{
+     cart.addProduct(prodId, Product.price)
+
+  })
+  res.redirect('/cart');
+}
 
 exports.getOrders = (req, res, next) => {
   res.render('shop/orders', {
