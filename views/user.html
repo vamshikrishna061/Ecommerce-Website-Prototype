@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Booking Appointment App</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Booking Appointment</h1>
+    </header>
+    <section action="container text-centre">
+      <form id="my-form">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required />
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required />
+        <label for="mobile">Phone:</label>
+        <input type="number" id="mobile" name="pnumber" required />
+        <button id="submit">Submit</button>
+      </form>
+      <ul id="users"></ul>
+    </section>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    <script>
+      const myForm = document.getElementById("my-form");
+      const UserName = document.getElementById("name");
+      const PhoneNumber = document.getElementById("mobile");
+      const Email = document.getElementById("email");
+      myForm.addEventListener("submit", onSubmit);
+      function onSubmit(e) {
+        e.preventDefault();
+        name = UserName.value;
+        mobile = PhoneNumber.value;
+        email = Email.value;
+        UserName.value = "";
+        PhoneNumber.value = "";
+        Email.value = "";
+
+        myObj = {
+          name,
+          mobile,
+          email,
+        };
+        axios
+          .post("http://localhost:3000/user/add-user", myObj)
+          .then((response) => {
+            console.log(response);
+            addNewLineElement(response.data.newUserDetail);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+      if (document.readyState == "loading") {
+        axios.get("http:localhost:3000/user/get-users").then((result) => {
+          console.log(result);
+          result.data.forEach((element) => {
+            addNewLineElement(element);
+          });
+        });
+      }
+
+      function addNewLineElement(details) {
+        const ul = document.getElementById("users");
+        const li = document.createElement("li");
+        console.log(details);
+        li.appendChild(
+          document.createTextNode(details.name + " " + details.email + " ")
+        );
+
+        const editButton = document.createElement("input");
+        editButton.id = "edit";
+        editButton.type = "button";
+        editButton.value = "Edit";
+        editButton.addEventListener("click", () => {
+          document.getElementById("name").value = details.name;
+          document.getElementById("mobile").value = details.mobile;
+          document.getElementById("email").value = details.email;
+          axios.get(`http:localhost:3000/user/delete-user/${details.id}`);
+          li.remove();
+          editingUserId = details._id;
+          console.log(editingUserId);
+        });
+        editButton.style.border = "2px solid green";
+        li.appendChild(editButton);
+        const delBtn = document.createElement("input");
+        delBtn.id = "delete";
+        delBtn.type = "button";
+        delBtn.value = "delete";
+        delBtn.addEventListener("click", () => {
+          axios.get(`http:localhost:3000/user/delete-user/${details.id}`);
+          li.remove();
+        });
+        delBtn.style.border = "2px solid red";
+        li.appendChild(delBtn);
+        ul.appendChild(li);
+      }
+    </script>
+  </body>
+</html>
