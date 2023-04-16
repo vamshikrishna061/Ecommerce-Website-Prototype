@@ -10,10 +10,12 @@ const app = express();
 
 const cors = require("cors");
 const userRoutes = require("./routes/user");
+const expenseRoutes = require("./routes/expense");
 
 app.use(bodyParser.json());
 app.use(cors());
 app.use(userRoutes);
+app.use("/expense", expenseRoutes);
 
 app.set("view engine", "ejs");
 app.set("views", "views");
