@@ -7,6 +7,8 @@ const errorController = require("./controllers/error");
 const sequelize = require("./util/database");
 const Product = require("./models/product");
 const Usr = require("./models/usr");
+const Cart = require("./models/cart");
+const CartItem = require("./models/cart-item");
 
 const app = express();
 
@@ -45,33 +47,40 @@ app.use(errorController.get404);
 
 Product.belongsTo(Usr, { constraints: true, onDelete: "CASCADE" });
 Usr.hasMany(Product);
-
-// sequelize
-//   //.sync({ force: true })
-//   .sync()
-//   .then((result) => {
-//     return Usr.findAll();
-//   })
-//   .then((usr) => {
-//     if (!usr) {
-//       return Usr.create({ name: "vammy", email: "vammy@test.com" });
-//     }
-//     return usr;
-//   })
-//   .then((usr) => {
-//     console.log(usr);
-//     app.listen(3000);
-//   })
-//   .catch((err) => {
-//     console.log(err);
-//   });
+Usr.hasOne(Cart);
+Cart.belongsTo(Usr);
+Cart.belongsToMany(Product, { through: CartItem });
+Product.belongsToMany(Cart, { through: CartItem });
 
 sequelize
-  .sync({ force: true })
+  //.sync({ force: true })
+  .sync()
   .then((result) => {
-    console.log(result);
+    return Usr.findByPk(1);
+  })
+  .then((usr) => {
+    if (!usr) {
+      return Usr.create({ name: "vammy", email: "vammy@test.com" });
+    }
+    return usr;
+  })
+  .then((usr) => {
+    //console.log(usr);
+    return usr.createCart();
+  })
+  .then((cart) => {
     app.listen(3000);
   })
   .catch((err) => {
     console.log(err);
   });
+
+// sequelize
+//   .sync({ force: true })
+//   .then((result) => {
+//     console.log(result);
+//     app.listen(3000);
+//   })
+//   .catch((err) => {
+//     console.log(err);
+//   });
