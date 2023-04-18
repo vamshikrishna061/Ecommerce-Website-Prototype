@@ -17,12 +17,13 @@ exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
   const product = new Product(null, title, imageUrl, description, price);
-  Product.create({
-    title: title,
-    price: price,
-    imageUrl: imageUrl,
-    description: description,
-  })
+  req.usr[1]
+    .createProduct({
+      title: title,
+      price: price,
+      imageUrl: imageUrl,
+      description: description,
+    })
     .then((result) => {
       //console.log(result);
       console.log("Created Product");
@@ -39,9 +40,11 @@ exports.getEditProduct = (req, res, next) => {
     return res.redirect("/");
   }
   const prodId = req.params.productId;
-  Product.findAll({ where: { id: prodId } })
-    //Product.findById(prodId)
-    .then((product) => {
+  req.usr[1]
+    .getProducts({ where: { id: prodId } })
+    //Product.findAll({ where: { id: prodId } })
+    .then((products) => {
+      const product = products;
       if (!product) {
         return res.redirect("/");
       }
@@ -61,8 +64,8 @@ exports.postEditProduct = (req, res, next) => {
   const updatedPrice = req.body.price;
   const updatedImageUrl = req.body.imageUrl;
   const updatedDesc = req.body.description;
-  Product.findAll({ where: { id: prodId } })
-    //Product.findById(prodId)
+  Product.findAll(prodId)
+    //({ where: { id: prodId } })
     .then((product) => {
       product[0].title = updatedTitle;
       product[0].price = updatedPrice;
@@ -78,7 +81,8 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.findAll()
+  req.usr[1]
+    .getProducts()
     .then((products) => {
       res.render("admin/products", {
         prods: products,
