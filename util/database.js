@@ -14,7 +14,7 @@ let _db;
 
 const mongoConnect = (callback) => {
   MongoClient.connect(
-    "mongodb+srv://SAMMY:SAMMY123@cluster0.fz5axti.mongodb.net/shop?retryWrites=true&w=majority"
+    "mongodb+srv://SAMMY:ZLaCJ4Ic8wSbU38c@cluster0.fz5axti.mongodb.net/shop?retryWrites=true&w=majority"
   )
 
     .then((client) => {
