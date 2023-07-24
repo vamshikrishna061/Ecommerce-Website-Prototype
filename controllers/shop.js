@@ -1,4 +1,5 @@
 const path = require("path");
+const Order = require("../models/order");
 const Cart = require("../models/cart");
 const Product = require("../models/product");
 const rootDir = require("../util/path.js");
@@ -105,9 +106,28 @@ exports.postCartDeleteProduct = (req, res, next) => {
 };
 
 exports.postOrder = (req, res, next) => {
-  let fetchedCart;
+  //let fetchedCart;
   req.user
-    .addOrder()
+    .populate("cart.items.productId")
+    //.execPopulate()
+    .then((user) => {
+      console.log(user.cart.items);
+      const products = user.cart.items.map((i) => {
+        return { quantity: i.quantity, product: { ...i.productId._doc } };
+      });
+      const order = new Order({
+        user: {
+          name: req.user.name,
+          userId: req.user,
+        },
+        products: products,
+      });
+      return order.save();
+    })
+
+    // req.user
+
+    //   .addOrder()
     // .populate("cart.items.productId")
     // .then((user) => {
     //   const products = user.cart.items.map((i) => {
@@ -132,6 +152,9 @@ exports.postOrder = (req, res, next) => {
     //     .catch((err) => console.log(err));
 
     .then((result) => {
+      return req.user.clearCart();
+    })
+    .then(() => {
       res.redirect("/orders");
     })
     .catch((err) => console.log(err));
